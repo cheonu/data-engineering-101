@@ -1,0 +1,5 @@
+outs:
+- md5: c5ea6f256e2cf5d5d5c0aaad4f067500
+  size: 4478
+  hash: md5
+  path: pipeline_v1.joblib

@@ -6,7 +6,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, precision_recall_curve
+import matplotlib.pyplot as plt
 
 
 
@@ -70,3 +71,33 @@ coef_df = pd.DataFrame({
 
 print("=== Feature Importance (Logistic Regression Weights) ===")
 print(coef_df[['feature', 'weight']].to_string(index=False))
+
+
+# Get probabilities for the test set
+y_probs = model.predict_proba(X_test)[:,1]
+
+# Compute precision-recall curve
+precision, recall, thresholds = precision_recall_curve(y_test, y_probs)
+
+# Plot
+plt.figure(figsize=(8, 5))
+plt.plot(recall, precision, marker='.', label='Model')
+plt.xlabel('Recall (Catch true survivors)')
+plt.ylabel('Precision (When we predict survive, how often right)')
+plt.title('Precision-Recall Tradeoff')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Find threshold that maximizes F1 (balance)
+f1 = 2 * (precision[:-1] * recall[:-1]) / (precision[:-1] + recall[:-1] + 1e-8)
+best_idx = np.argmax(f1)
+print(f"\nOptimal threshold (max F1): {thresholds[best_idx]:.3f}")
+print(f"→ Precision: {precision[best_idx]:.3f}, Recall: {recall[best_idx]:.3f}")
+
+# Show what happens at different thresholds
+for thresh in [0.3, 0.5, 0.7]:
+    preds = (y_probs >= thresh).astype(int)
+    from sklearn.metrics import classification_report
+    print(f"\n=== Threshold = {thresh} ===")
+    print(classification_report(y_test, preds, target_names=['Died', 'Survived']))
