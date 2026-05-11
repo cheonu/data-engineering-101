@@ -15,7 +15,7 @@ os.makedirs('artifacts', exist_ok=True)
 artifact = {
     'preprocessor': preprocessor,
     'model': model,
-    #'threshold': optimal_threshold, # Use the value from your PR curve analysis
+    'threshold': 0.5,  # default logistic regression threshold
     'feature_names': preprocessor.get_feature_names_out()
 }
 
