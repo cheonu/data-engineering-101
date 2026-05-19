@@ -1,0 +1,7 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+pydantic==2.11.1
+pandas==2.1.4
+scikit-learn==1.8.0
+joblib==1.5.3
+# Optional: evidently==0.4.7 for drift detection
